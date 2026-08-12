@@ -142,8 +142,29 @@ const MinistryCard = ({ card, onClick }) => {
           {/* Name & Badge Section */}
           <Stack direction="column" spacing={1}>
             {(() => {
-              const hasMultipleMinisters = (card.ministers?.length ?? 0) > 1;
-              return (card.ministers ?? []).map((minister, idx) => (
+              const ministers = card.ministers ?? [];
+              const hasMultipleMinisters = ministers.length > 1;
+              const fallbackName = "Error Fetching Minister Name";
+
+              if (ministers.length === 0) {
+                return (
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontWeight: 400,
+                      fontSize: { xs: "0.7rem", md: "13px" },
+                      color: colors.textPrimary,
+                      fontFamily: "poppins",
+                      fontStyle: "italic",
+                      opacity: 0.7,
+                    }}
+                  >
+                    {fallbackName}
+                  </Typography>
+                );
+              }
+
+              return ministers.map((minister, idx) => (
               <Stack key={minister.id ?? `${card.id}-minister-${idx}`} direction="column" spacing={0}>
                 {/* President Label */}
                 {minister.isPresident ? (
@@ -186,7 +207,7 @@ const MinistryCard = ({ card, onClick }) => {
                     }}
                   >
                     {hasMultipleMinisters && "• "}
-                    {minister.name}
+                    {minister.name || fallbackName}
                   </Typography>
 
                   {minister.isNew && showPersonBadge && (
